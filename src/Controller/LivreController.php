@@ -15,10 +15,19 @@ use Symfony\Component\Routing\Attribute\Route;
 final class LivreController extends AbstractController
 {
     #[Route('/', name: 'app_livre_index', methods:['GET'])]
-    public function index(LivreRepository $livreRepository): Response
+    public function index(Request $request, LivreRepository $livreRepository): Response
     {
+        $search = $request->query->get('search',"");
+
+        if ($search) { 
+            $livres = $livreRepository->findBySearchTerm($search);  
+        } else { 
+            $livres = $livreRepository->findAll(); 
+        } 
+
         return $this->render('livre/index.html.twig', [
-            'livres' => $livreRepository->findAll(),
+            'livres' => $livres,
+            'search' => $search,
         ]);
     }
 

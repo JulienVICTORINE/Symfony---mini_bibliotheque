@@ -6,6 +6,7 @@ use App\Repository\AuteurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert; 
 
 #[ORM\Entity(repositoryClass: AuteurRepository::class)]
 class Auteur
@@ -13,12 +14,29 @@ class Auteur
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+
+    // Validation pour le nom
+    #[Assert\NotBlank(message: 'Le nom ne peut pas être vide')]  
+    #[Assert\Length( 
+        min: 2, 
+        max: 100, 
+        minMessage: 'Le nom doit contenir au moins {{ limit }} caractères',  maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères'
+    )] 
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
     #[ORM\Column(length: 100)]
+
+
+    // Validation pour le prénom
+    #[Assert\NotBlank(message: 'Le prénom ne peut pas être vide')]  
+    #[Assert\Length( 
+        min: 2, 
+        max: 100, 
+        minMessage: 'Le prénom doit contenir au moins {{ limit }} caractères',  maxMessage: 'Le prénom ne peut pas dépasser {{ limit }} caractères'  
+    )] 
     private ?string $prenom = null;
 
     /**
@@ -52,6 +70,11 @@ class Auteur
     public function getPrenom(): ?string
     {
         return $this->prenom;
+    }
+
+    public function getNomComplet(): ?string 
+    {
+        return $this->prenom.' '.$this->nom;
     }
 
     public function setPrenom(string $prenom): static

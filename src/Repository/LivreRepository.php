@@ -40,4 +40,14 @@ class LivreRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    // Ajouter une recherche simple
+    public function findBySearchTerm(string $searchTerm): array { 
+        return $this->createQueryBuilder('l') 
+        ->leftJoin('l.auteur', 'a') 
+        ->andWhere('l.titre LIKE :search OR a.nom LIKE :search OR a.prenom  LIKE :search') 
+        ->setParameter('search', '%' . $searchTerm . '%')  ->orderBy('l.titre', 'ASC') 
+        ->getQuery() 
+        ->getResult(); 
+    }
 }
